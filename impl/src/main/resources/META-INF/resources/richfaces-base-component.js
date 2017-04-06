@@ -224,12 +224,18 @@
              *
              * @return {DOMElement}
              * */
-            attachToDom: function(source) {
+            attachToDom: function (source) {
                 source = source || this.id;
                 var element = richfaces.getDomElement(source);
                 if (element) {
-                    var container = element[richfaces.RICH_CONTAINER] = element[richfaces.RICH_CONTAINER] || {};
+                    var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+                    if (!containerId || containerId === "") {
+                        containerId = "C" + (richfaces.CONTAINER_ID++);
+                        element.setAttribute(richfaces.RICH_CONTAINER, containerId);
+                    }
+                    var container = richfaces.COMPONENT_MAP[containerId] || {};
                     container.component = this;
+                    richfaces.COMPONENT_MAP[containerId] = container;
                 }
                 return element;
             },
@@ -242,10 +248,16 @@
              * @param {string|DOMElement|jQuery} source - component id, DOM element or DOM elements wrapped by jQuery
              *
              * */
-            detach: function(source) {
+            detach: function (source) {
                 source = source || this.id;
                 var element = richfaces.getDomElement(source);
-                element && element[richfaces.RICH_CONTAINER] && (element[richfaces.RICH_CONTAINER].component = null);
+                if (element) {
+                    var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+                    if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId]) {
+                        richfaces.COMPONENT_MAP[containerId].component = null;
+                        delete richfaces.COMPONENT_MAP[containerId];
+                    }
+                }
             },
 
             /**
@@ -348,17 +360,23 @@
              *
              * @return {DOMElement}
              * */
-            attachToDom: function(source) {
+            attachToDom: function (source) {
                 source = source || this.id;
                 var element = richfaces.getDomElement(source);
                 if (element) {
-                    var container = element[richfaces.RICH_CONTAINER] = element[richfaces.RICH_CONTAINER] || {};
+                    var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+                    if (!containerId || containerId === "") {
+                        containerId = "C" + (richfaces.CONTAINER_ID++);
+                        element.setAttribute(richfaces.RICH_CONTAINER, containerId);
+                    }
+                    var container = richfaces.COMPONENT_MAP[containerId] || {};
                     if (container.attachedComponents) {
                         container.attachedComponents[this.name] = this;
                     } else {
                         container.attachedComponents = {};
                         container.attachedComponents[this.name] = this;
                     }
+                    richfaces.COMPONENT_MAP[containerId] = container;
                 }
                 return element;
             },
@@ -371,10 +389,15 @@
              * @param {string|DOMElement|jQuery} source - component id, DOM element or DOM elements wrapped by jQuery
              *
              * */
-            detach: function(source) {
+            detach: function (source) {
                 source = source || this.id;
                 var element = richfaces.getDomElement(source);
-                element && element[richfaces.RICH_CONTAINER] && (element[richfaces.RICH_CONTAINER].attachedComponents[this.name] = null);
+                if (element) {
+                    var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+                    if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId]) {
+                        richfaces.COMPONENT_MAP[containerId].attachedComponents[this.name] = null;
+                    }
+                }
             },
 
             /**

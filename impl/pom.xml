@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.richfaces.core</groupId>
         <artifactId>richfaces-core-parent</artifactId>
-        <version>4.3.7.Final</version>
+        <version>4.3.7.Final.chromefix</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -73,6 +73,12 @@
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
+<dependency>
+    <groupId>jboss</groupId>
+    <artifactId>jboss-j2ee</artifactId>
+    <version>4.2.2.GA</version>
+            <scope>provided</scope>
+</dependency>
 
         <!-- Cache Impls -->
         <dependency>

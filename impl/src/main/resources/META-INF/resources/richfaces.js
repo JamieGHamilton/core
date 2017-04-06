@@ -12,7 +12,9 @@ if (!window.RichFaces) {
 
 (function(jQuery, richfaces) {
 
-    richfaces.RICH_CONTAINER = "rf";
+    richfaces.RICH_CONTAINER = "data-rf";
+    richfaces.CONTAINER_ID = 1;
+    richfaces.COMPONENT_MAP = {};
     
     /**
      * All input elements which can hold value, which are enabled and visible.
@@ -68,8 +70,12 @@ if (!window.RichFaces) {
         var element = richfaces.getDomElement(source);
 
         if (element) {
-            return (element[richfaces.RICH_CONTAINER] || {})["component"];
+            var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+            if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId]) {
+                return richfaces.COMPONENT_MAP[containerId].component;
+            }
         }
+        return null;
     };
     
 
@@ -84,19 +90,25 @@ if (!window.RichFaces) {
 
     richfaces.$$ = function(componentName, element) {
         while (element.parentNode) {
-            var e = element[richfaces.RICH_CONTAINER];
-            if (e && e.component && e.component.name == componentName)
+            var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+            if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId] && richfaces.COMPONENT_MAP[containerId].component.name == componentName) {
                 return e.component;
-            else
+            }
+            else {
                 element = element.parentNode;
+            }
         }
     };
     richfaces.findNonVisualComponents = function (source) {
         var element = richfaces.getDomElement(source);
 
         if (element) {
-            return (element[richfaces.RICH_CONTAINER] || {})["attachedComponents"];
+            var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
+            if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId]) {
+                return richfaces.COMPONENT_MAP[containerId]["attachedComponents"];
+            }
         }
+        return null;
     };
 
     // find component and call his method
