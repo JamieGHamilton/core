@@ -92,7 +92,7 @@ if (!window.RichFaces) {
         while (element.parentNode) {
             var containerId = element.getAttribute(richfaces.RICH_CONTAINER);
             if (containerId && containerId !== "" && !!richfaces.COMPONENT_MAP[containerId] && richfaces.COMPONENT_MAP[containerId].component.name == componentName) {
-                return e.component;
+                return richfaces.COMPONENT_MAP[containerId].component;
             }
             else {
                 element = element.parentNode;
